@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -386,6 +385,7 @@ footer {
   gap:10px;
   z-index:999;
   box-shadow:0 -4px 20px rgba(255,102,0,0.4);
+  transition:opacity 0.3s;
 }
 .sticky-left { font-size:12px; font-weight:bold; color:#000; line-height:1.4; }
 .sticky-left .sp { font-size:26px; font-weight:900; }
@@ -401,17 +401,9 @@ footer {
   letter-spacing:0.5px;
 }
 .pad-bottom { height:72px; }
-
-/* PIXEL */
-.fb-pixel { display:none; }
 </style>
 </head>
 <body>
-
-<!-- FACEBOOK PIXEL -->
-<noscript class="fb-pixel">
-  <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1198497992259042&ev=PageView&noscript=1"/>
-</noscript>
 
 <!-- TOP BAR -->
 <div class="topbar">🔥 LIMITED TIME: 93% OFF — ONLY ₹99 TODAY! 🔥</div>
@@ -452,9 +444,9 @@ footer {
   <div class="countdown-box">
     <div class="cd-label">⏰ Offer expires in:</div>
     <div class="cd-timer">
-      <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-unit">Hours</div></div>
-      <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-unit">Mins</div></div>
-      <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-unit">Secs</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-h">23</div><div class="cd-unit">Hours</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-m">59</div><div class="cd-unit">Mins</div></div>
+      <div class="cd-block"><div class="cd-num" id="cd-s">59</div><div class="cd-unit">Secs</div></div>
     </div>
   </div>
 </section>
@@ -503,14 +495,12 @@ footer {
 <section class="section" style="padding-top:0">
   <div class="sec-title">Real <span>Results</span> From Customers</div>
   <div class="divider"></div>
-  <!-- REPLACE src="" WITH YOUR ACTUAL CUSTOMER SCREENSHOT LINKS -->
   <div class="results-grid">
     <img src="https://thedigitalplay.store/cdn/shop/files/1000270384.png?v=1771412492&width=600" alt="Customer Result 1"/>
     <img src="https://thedigitalplay.store/cdn/shop/files/1000270386.png?v=1771412492&width=600" alt="Customer Result 2"/>
     <img src="https://thedigitalplay.store/cdn/shop/files/1000270385.png?v=1771412492&width=600" alt="Customer Result 3"/>
     <img src="https://thedigitalplay.store/cdn/shop/files/1000270387.png?v=1771412492&width=600" alt="Customer Result 4"/>
   </div>
-  <p style="text-align:center;font-size:11px;color:#888;margin-top:8px;">Replace above images with real customer result screenshots for better trust</p>
 </section>
 
 <!-- TESTIMONIALS -->
@@ -518,35 +508,30 @@ footer {
   <div class="sec-title">What <span>Customers</span> Say</div>
   <div class="divider"></div>
   <div class="testi-list">
-
     <div class="testi">
       <div class="t-stars">★★★★★</div>
       <div class="t-text">"Bhai yeh bundle ne meri theme page ko 2 hafte mein 10k se 45k followers le gaya. Reels ek ek viral ho rahi hain. Best 99 rupay ever spent!"</div>
       <div class="t-author">Rohit Sharma</div>
       <div class="t-handle">@rohit.viral.page • Mumbai</div>
     </div>
-
     <div class="testi">
       <div class="t-stars">★★★★★</div>
       <div class="t-text">"Maine ek din mein 15 reels post ki aur 3 viral ho gayi. 50k views in 24 hours! Ye bundle literally game changer hai content creators ke liye."</div>
       <div class="t-author">Priya Verma</div>
       <div class="t-handle">@priya.themepage • Delhi</div>
     </div>
-
     <div class="testi">
       <div class="t-stars">★★★★★</div>
       <div class="t-text">"Delivery was instant, quality is top notch, no watermarks at all. I've tried other bundles before but this one is 10x better. Highly recommend!"</div>
       <div class="t-author">Arjun Mehta</div>
       <div class="t-handle">@arjun.content.hub • Pune</div>
     </div>
-
     <div class="testi">
       <div class="t-stars">★★★★★</div>
       <div class="t-text">"Mere YouTube channel pe subscribers bahut slow aa rahe the. Is bundle se Shorts start kiye aur 1 month mein 5k subscribers ho gaye. Worth it!"</div>
       <div class="t-author">Sneha Gupta</div>
       <div class="t-handle">@sneha.yt.growth • Jaipur</div>
     </div>
-
   </div>
 </section>
 
@@ -720,7 +705,7 @@ footer {
 <div class="pad-bottom"></div>
 
 <!-- STICKY BAR -->
-<div class="sticky">
+<div class="sticky" id="stickyBar">
   <div class="sticky-left">
     Only Today<br>
     <span class="sp">₹99</span>
@@ -729,23 +714,18 @@ footer {
 </div>
 
 <script>
-// COUNTDOWN — 24hr rolling
+// COUNTDOWN — no localStorage (works on all deploy platforms)
 (function(){
-  var key = 'cd_end_v2';
-  var end = localStorage.getItem(key);
-  var now = Date.now();
-  if(!end || parseInt(end) < now){
-    end = now + 24*60*60*1000;
-    localStorage.setItem(key, end);
-  }
+  var remaining = 23 * 3600 + 59 * 60 + 59;
   function tick(){
-    var rem = Math.max(0, parseInt(end) - Date.now());
-    var h = Math.floor(rem/3600000);
-    var m = Math.floor((rem%3600000)/60000);
-    var s = Math.floor((rem%60000)/1000);
+    if(remaining < 0) remaining = 24 * 3600;
+    var h = Math.floor(remaining / 3600);
+    var m = Math.floor((remaining % 3600) / 60);
+    var s = remaining % 60;
     document.getElementById('cd-h').textContent = ('0'+h).slice(-2);
     document.getElementById('cd-m').textContent = ('0'+m).slice(-2);
     document.getElementById('cd-s').textContent = ('0'+s).slice(-2);
+    remaining--;
   }
   tick();
   setInterval(tick, 1000);
@@ -762,7 +742,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 });
 
 // Hide sticky near final CTA
-var sticky = document.querySelector('.sticky');
+var sticky = document.getElementById('stickyBar');
 var finalCta = document.querySelector('.final-cta');
 window.addEventListener('scroll', function(){
   var rect = finalCta.getBoundingClientRect();
